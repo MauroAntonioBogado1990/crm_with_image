@@ -13,7 +13,7 @@ class ProductTemplateWithOptimizedImage(models.Model):
     optimized_image = fields.Binary(string="Imagen Optimizada")
 
     def _process_image(self, original_image, watermark_image=False):
-        """ Reduce el tamaño y peso de la imagen, aplica marca de agua si existe. """
+        """ Reduce el tamaño y peso de la imagen, aplica una marca de agua con transparencia. """
         if not original_image:
             return False
 
@@ -30,8 +30,13 @@ class ProductTemplateWithOptimizedImage(models.Model):
             if watermark_image:
                 watermark = Image.open(BytesIO(base64.b64decode(watermark_image))).convert("RGBA")
                 watermark = watermark.resize((int(compressed_image.width * 0.3), int(compressed_image.height * 0.3)))
+
+                # Ajustar transparencia (0 = completamente invisible, 255 = opaco)
+                watermark.putalpha(128)  # Ajusta el nivel de opacidad según lo que necesites
+
                 position = (compressed_image.width - watermark.width - 10, compressed_image.height - watermark.height - 10)
 
+                # Aplicar marca de agua con transparencia
                 base_rgba = compressed_image.convert("RGBA")
                 base_rgba.paste(watermark, position, watermark)
                 compressed_image = base_rgba.convert("RGB")
@@ -47,14 +52,12 @@ class ProductTemplateWithOptimizedImage(models.Model):
 
     @api.model
     def create(self, vals):
-        """ Al crear el producto, optimiza la imagen si está definida. """
         if 'image_1920' in vals:
             vals['optimized_image'] = self._process_image(vals['image_1920'], vals.get('watermark_image'))
             vals['image_1920'] = vals['optimized_image']  # Reemplazar imagen original
         return super(ProductTemplateWithOptimizedImage, self).create(vals)
 
     def write(self, vals):
-        """ Al actualizar el producto, optimiza la imagen si cambia. """
         if 'image_1920' in vals:
             vals['optimized_image'] = self._process_image(vals['image_1920'], vals.get('watermark_image'))
             vals['image_1920'] = vals['optimized_image']  # Reemplazar imagen original
