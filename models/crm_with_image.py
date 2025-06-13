@@ -12,6 +12,7 @@ class ProductTemplateWithOptimizedImage(models.Model):
     watermark_image = fields.Binary(string="Marca de Agua")
     optimized_image = fields.Binary(string="Imagen Optimizada")
 
+
     def _process_image(self, original_image, watermark_image=False):
         """ Reduce el tamaño y peso de la imagen, aplica una marca de agua con transparencia. """
         if not original_image:
@@ -62,3 +63,30 @@ class ProductTemplateWithOptimizedImage(models.Model):
             vals['optimized_image'] = self._process_image(vals['image_1920'], vals.get('watermark_image'))
             vals['image_1920'] = vals['optimized_image']  # Reemplazar imagen original
         return super(ProductTemplateWithOptimizedImage, self).write(vals)
+    
+    
+
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+
+    def action_confirm(self):
+        super(SaleOrder, self).action_confirm()
+
+        for order in self:
+            customer = order.partner_id
+            product_names = ", ".join(order.order_line.mapped('product_id.name'))
+
+            # Crear oportunidad en CRM
+            crm_lead = self.env['crm.lead'].sudo().create({
+                'name': f"Interés en productos: {product_names}",
+                'partner_id': customer.id,
+                'contact_name': customer.name,
+                'phone': customer.phone,
+                'email_from': customer.email,
+                'description': f"Productos comprados: {product_names}",
+                'user_id': 1,  # Puedes asignar al administrador o vendedor específico
+            })
+
+            # Puedes imprimir el ID del Lead para depuración
+            print(f"Lead creado con ID: {crm_lead.id}")
+
