@@ -70,23 +70,22 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     def action_confirm(self):
-        super(SaleOrder, self).action_confirm()
+        res = super().website_sale_main_button()
 
         for order in self:
-            customer = order.partner_id
-            product_names = ", ".join(order.order_line.mapped('product_id.name'))
+            if order.website_id:  # Solo si proviene del eCommerce
+                _logger.warning('=== CREANDO OPORTUNIDAD DESDE ECOMMERCE ===')
+                _logger.warning('Pedido: %s | Cliente: %s', order.name, order.partner_id.name)
 
-            # Crear oportunidad en CRM
-            crm_lead = self.env['crm.lead'].sudo().create({
-                'name': f"Interés en productos: {product_names}",
-                'partner_id': customer.id,
-                'contact_name': customer.name,
-                'phone': customer.phone,
-                'email_from': customer.email,
-                'description': f"Productos comprados: {product_names}",
-                'user_id': 1,  # Puedes asignar al administrador o vendedor específico
-            })
+                opportunity = order.env['crm.lead'].create({
+                    'name': f'Oportunidad desde tienda - {order.name}',
+                    'partner_id': order.partner_id.id,
+                    'user_id': order.user_id.id,
+                    'type': 'opportunity',
+                    'team_id': order.team_id.id,
+                    'description': f'Pedido generado desde ecommerce. Total: {order.amount_total}',
+                })
 
-            # Puedes imprimir el ID del Lead para depuración
-            print(f"Lead creado con ID: {crm_lead.id}")
+                _logger.warning('Oportunidad creada: %s', opportunity.id)
 
+        return res

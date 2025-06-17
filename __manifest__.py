@@ -4,10 +4,11 @@
     'category': 'Tools',
     'author':'Mauro Bogado',
     'summary': 'Modulo para poder realizar la carga de una imagen comprimida y con marca de agua',
-    'depends': ['base','crm','sale'],
+    'depends': ['base','crm','sale','web', 'website'],
     'data': [
         #'security/ir.model.access.csv',
         'views/product_with_image.xml',
+        #'views/assets.xml',
     ],
     'assets': {
     'web.assets_frontend': [

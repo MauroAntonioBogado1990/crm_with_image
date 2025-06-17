@@ -1,0 +1,7 @@
+<odoo>
+    <template id="assets_frontend" inherit_id="website.assets_frontend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/crm_with_image/static/src/js/custom_cart.js"/>
+        </xpath>
+    </template>
+</odoo>

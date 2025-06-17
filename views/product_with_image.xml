@@ -15,21 +15,24 @@
     
         </field>
     </record>
-    
-     <!-- <record id="view_product_product_image_form" model="ir.ui.view">
-        <field name="name">product.product.with.image.form</field>
-        <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_template_form_view"/>
-        <field name="arch" type="xml">
-            <xpath expr="field[@name='detailed_type']" position="after">
-         
-                <field name="watermark_image" widget="image"/>
-                <field name="optimized_image" widget="image" readonly="1"/>
-                
-            </xpath>
-    
-        </field>
-    </record> -->
+    <!--vista que realiza el cambio de la funcionalidad del boton-->
+  <template id="photographer_info_template" name="Photographer Info">
+    <t t-call="website.layout">
+        <div class="container mt-5">
+            <h2>Nombre Fotógrafo</h2>
+            <p t-esc="name"/>
+            <h2>Datos Bancarios</h2>
+            <p t-esc="bank"/>
+            <h2>Alias</h2>
+            <p t-esc="alias"/>
+            <h2>Contacto</h2>
+            <p t-esc="tel"/>
+            <a t-att-href="shop_url" class="btn btn-primary">Volver a la tienda</a>
+        </div>
+    </t>
+</template>
+
+     
     
     
 
@@ -39,9 +42,3 @@
     
 
 </odoo>
-
-
-
-
-
-

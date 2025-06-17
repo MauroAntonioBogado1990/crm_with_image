@@ -39,3 +39,29 @@ class WebsiteSaleExtended(http.Controller):
             'admin_phone': admin_phone,
             'crm_lead_id': crm_lead.id
         }
+    
+  
+    
+    @http.route('/photographer/info', type='http', auth='public', website=True)
+    def photographer_info(self):
+        user = request.env.user
+
+        # Crear la oportunidad si el usuario está autenticado (o adaptarla a 'public' si es necesario)
+        if user and user.id != request.env.ref('base.public_user').id:
+            lead_vals = {
+                'name': f'Consulta Fotógrafo - {user.name}',
+                'partner_id': user.partner_id.id,
+                'email_from': user.partner_id.email,
+                'phone': user.partner_id.phone,
+                'description': 'El usuario ha visitado la sección de información del fotógrafo.',
+            }
+            request.env['crm.lead'].sudo().create(lead_vals)
+
+        values = {
+            'name': 'Juan Pérez',
+            'bank': 'N° de Cuenta Banco Santader: XXXX-XXXX',
+            'alias': 'abrojo.enjambre.playa',
+            'tel': 'Whatsapp: 351 8967896 ',
+            'shop_url': '/shop',
+        }
+        return request.render('crm_with_image.photographer_info_template', values)

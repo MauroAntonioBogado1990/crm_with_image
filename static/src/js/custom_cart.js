@@ -1,24 +1,28 @@
-odoo.define('website_sale.photographer_button', function (require) {
+//se agrega este assets para poder realizar la llamada de vista de odoo
+
+odoo.define('custom_popup_controller', function (require) {
     "use strict";
 
     var ajax = require('web.ajax');
     var Dialog = require('web.Dialog');
 
-    $(document).on('click', '#contact_photographer', function (event) {
-        event.preventDefault();
-        var productId = $('#contact_photographer').data('product-id');
+    function mostrarDatosFotografo() {
+        ajax.jsonRpc("/photographer/info", 'call', {}).then(function (result) {
+            new Dialog(null, {
+                title: "Información del Fotógrafo",
+                size: 'medium',
+                $content: $('<div>').html(result.html),
+                buttons: [{
+                    text: "Continuar al checkout",
+                    classes: "btn-primary",
+                    click: function () {
+                        window.location.href = "/shop/checkout?express=1";
+                    }
+                }]
+            }).open();
+        });
+    }
 
-        console.log("📸 Botón 'Contactar Fotógrafo' clickeado. Enviando solicitud...");
-
-        ajax.jsonRpc('/shop/contact_photographer', 'call', { product_id: productId })
-            .then(function (data) {
-                console.log("✅ Respuesta del backend recibida:", data);
-                if (data.error) {
-                    Dialog.alert(this, data.error);
-                } else {
-                    Dialog.alert(this, data.message + 
-                        "\n📞 Teléfono del Fotógrafo: " + data.admin_phone);
-                }
-            });
-    });
+    // 🔥 Esto es CLAVE para que esté disponible globalmente
+    window.mostrarDatosFotografo = mostrarDatosFotografo;
 });
