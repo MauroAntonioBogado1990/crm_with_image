@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+<record id="view_form_fotos_equitacion" model="ir.ui.view">
+    <field name="name">fotos.equitacion.form</field>
+    <field name="model">fotos.equitacion</field>
+    <field name="arch" type="xml">
+        <form string="Cargar Foto de Equitación">
+            <group>
+                <field name="link_folder"/>
+                <field name="year"/>
+                <field name="jump_height"/>
+            </group>
+        </form>
+    </field>
+</record>
+
+<menuitem
+    id="menu_fotos_equitacion"
+    name="Cargar Foto"
+    parent="website.menu_site"
+    sequence="80"
+    action="crm_with_image.action_fotos_equitacion"/>
+
+
+
+
+
+
+
+     
+    
+    
+
+
+    
+
+    
+
+</odoo>

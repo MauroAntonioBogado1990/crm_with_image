@@ -1,0 +1,13 @@
+<odoo>
+  <data>
+       
+ <record id="action_fotos_equitacion" model="ir.actions.act_window">
+    <field name="name">Cargar Foto</field>
+    <field name="res_model">fotos.equitacion</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field> 
+</record> 
+
+
+  </data>
+</odoo>

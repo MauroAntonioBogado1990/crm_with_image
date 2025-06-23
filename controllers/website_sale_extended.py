@@ -12,11 +12,20 @@ class WebsiteSaleExtended(http.Controller):
         user = request.env.user
         customer = request.env['res.partner'].search([('id', '=', user.partner_id.id)], limit=1)
         product = request.env['product.product'].search([('id', '=', int(product_id))], limit=1)
+        #se agrega este campo para poder ver los productos
+        template = product.product_tmpl_id
         admin = request.env['res.users'].browse(1)  # Admin por defecto (ID 1)
 
         if not customer or not product:
             _logger.warning("⚠️ No se pudo registrar la oportunidad. Cliente o producto no encontrados.")
             return {'error': _("No se pudo registrar la oportunidad. Verifica los datos.")}
+        
+        # Enlace completo si el base_url está configurado
+        base_url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        image_link = template.link_folder or "Sin enlace"
+        full_image_link = f"{base_url}{image_link}" if image_link.startswith('/') else image_link
+
+
 
         # Obtener datos del administrador
         admin_phone = admin.partner_id.phone or _("No disponible")
@@ -28,7 +37,14 @@ class WebsiteSaleExtended(http.Controller):
             'contact_name': customer.name,
             'phone': customer.phone,
             'email_from': customer.email,
-            'description': f"Interés en fotografía del producto: {product.name}",
+            #'description': f"Interés en fotografía del producto: {product.name}",
+            'description': (
+                f"Interés en fotografía del producto: {product.name}\n"
+                f"Año del Evento: {template.year or 'No indicado'}\n"
+                f"Altura: {template.jump_height or 'Sin especificar'}\n"
+                f"Enlace: {full_image_link}"
+            ),
+
             'user_id': admin.id,
         })
 

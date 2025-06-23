@@ -11,6 +11,9 @@ class ProductTemplateWithOptimizedImage(models.Model):
 
     watermark_image = fields.Binary(string="Marca de Agua")
     optimized_image = fields.Binary(string="Imagen Optimizada")
+    link_folder = fields.Char(string="Enlace de imagen")
+    year = fields.Date(string="Año del Evento" )
+    jump_height = fields.Selection([('0.80', '0.80 m'), ('0.90', '0.90 m'), ('1.00', '1.00 m')],string="Altura del Salto")
 
 
     def _process_image(self, original_image, watermark_image=False):

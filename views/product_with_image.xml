@@ -10,7 +10,9 @@
          
                 <field name="watermark_image" widget="image"/>
                 <field name="optimized_image" widget="image" readonly="1"/>
-                
+                <field name="link_folder" widget="url" />
+                <field name="year" widget="url" />
+                <field name="jump_height" widget="url" />
             </xpath>
     
         </field>
@@ -31,8 +33,8 @@
         </div>
     </t>
 </template>
-<!--vista que reemplaza funcionalidad del boton de finalizar compra-->
-<template id="custom_navigation_button" inherit_id="website_sale.navigation_buttons">
+ 
+ <template id="custom_navigation_button" inherit_id="website_sale.navigation_buttons">
     <xpath expr="//a[@name='website_sale_main_button']" position="replace">
         <a role="button" name="website_sale_main_button"
            class="btn btn-primary w-100"
@@ -41,7 +43,11 @@
             <i class="fa fa-angle-right ms-2 fw-light"/>
         </a>
     </xpath>
+    
+     
+
 </template>
+
 
      
     
@@ -53,3 +59,6 @@
     
 
 </odoo>
+
+
+

@@ -8,11 +8,15 @@
     'data': [
         #'security/ir.model.access.csv',
         'views/product_with_image.xml',
-        #'views/assets.xml',
+        'views/website_menu.xml',
+        'views/view_equitacion.xml',
+        'security/ir.model.access.csv'
+        
     ],
     'assets': {
     'web.assets_frontend': [
         'crm_with_image/static/src/js/custom_cart.js',
+
     ],
     },
 
