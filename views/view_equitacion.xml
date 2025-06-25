@@ -8,24 +8,29 @@
         <form string="Cargar Foto de Equitación">
             <group>
                 <field name="name"/>
-                <field name="link_folder" widget="url"/>
+                <field name="ubicacion" /><!--Ubicacion de mi pc-->
                 <field name="year"/>
                 <field name="jump_height"/>
                  <field name="watermark_image"/>
-                 <field name="image_filenames"/>
                  
                  
             </group>
             
 
               
-     
+           <!--se enviarían al sitio web-->
             <button name="action_enviar_fotos_como_productos"
                     type="object"
-                    string="Enviar"
+                    string="Enviar al sitio web"
                     class="btn-primary"
-                    invisible="not link_folder or not image_filenames"/>
-
+                    />
+            <!--desde este boton se ejecuta la funcion para poder subir las fotos-->
+            <button name="action_subir_desde_carpeta"
+            type="object"
+            string="Subir desde carpeta de pc"
+            class="btn-primary"
+            />
+            
 
         </form>
     </field>

@@ -10,7 +10,7 @@
          
                 <field name="watermark_image" widget="image"/>
                 <field name="optimized_image" widget="image" readonly="1"/>
-                <field name="link_folder" widget="url" />
+                <field name="ubicacion" widget="url" />
                 <field name="year" widget="url" />
                 <field name="jump_height" widget="url" />
             </xpath>
@@ -59,6 +59,7 @@
     
 
 </odoo>
+
 
 
 
