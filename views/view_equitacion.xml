@@ -7,10 +7,26 @@
     <field name="arch" type="xml">
         <form string="Cargar Foto de Equitación">
             <group>
-                <field name="link_folder"/>
+                <field name="name"/>
+                <field name="link_folder" widget="url"/>
                 <field name="year"/>
                 <field name="jump_height"/>
+                 <field name="watermark_image"/>
+                 <field name="image_filenames"/>
+                 
+                 
             </group>
+            
+
+              
+     
+            <button name="action_enviar_fotos_como_productos"
+                    type="object"
+                    string="Enviar"
+                    class="btn-primary"
+                    invisible="not link_folder or not image_filenames"/>
+
+
         </form>
     </field>
 </record>
@@ -22,19 +38,5 @@
     sequence="80"
     action="crm_with_image.action_fotos_equitacion"/>
 
-
-
-
-
-
-
-     
-    
-    
-
-
-    
-
-    
 
 </odoo>
