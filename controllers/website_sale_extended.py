@@ -60,24 +60,33 @@ class WebsiteSaleExtended(http.Controller):
     
     @http.route('/photographer/info', type='http', auth='public', website=True)
     def photographer_info(self):
+        
         user = request.env.user
+        order = request.website.sale_get_order()
+        product_names = ''
 
-        # Crear la oportunidad si el usuario está autenticado (o adaptarla a 'public' si es necesario)
+        if order and order.order_line:
+            product_names = ', '.join(order.order_line.mapped(lambda l: l.product_id.display_name))
+
         if user and user.id != request.env.ref('base.public_user').id:
+            description = 'El usuario ha visitado la sección de información del fotógrafo.'
+            if product_names:
+                description += f'\nProductos en el carrito: {product_names}'
+
             lead_vals = {
                 'name': f'Consulta Fotógrafo - {user.name}',
                 'partner_id': user.partner_id.id,
                 'email_from': user.partner_id.email,
                 'phone': user.partner_id.phone,
-                'description': 'El usuario ha visitado la sección de información del fotógrafo.',
+                'description': description,
             }
             request.env['crm.lead'].sudo().create(lead_vals)
 
         values = {
             'name': 'Juan Pérez',
-            'bank': 'N° de Cuenta Banco Santader: XXXX-XXXX',
+            'bank': 'N° de Cuenta Banco Santander: XXXX-XXXX',
             'alias': 'abrojo.enjambre.playa',
-            'tel': 'Whatsapp: 351 8967896 ',
+            'tel': 'Whatsapp: 351 8967896',
             'shop_url': '/shop',
         }
         return request.render('crm_with_image.photographer_info_template', values)
