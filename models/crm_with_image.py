@@ -94,30 +94,30 @@ class ProductTemplateWithOptimizedImage(models.Model):
 
         #     return res
         
-        def action_confirm(self):
-            res = super().action_confirm()
+        # def action_confirm(self):
+        #     res = super().action_confirm()
 
-            for order in self:
-                if order.website_id:
-                    _logger.warning('=== CREANDO OPORTUNIDAD DESDE ECOMMERCE ===')
-                    _logger.warning('Pedido: %s | Cliente: %s', order.name, order.partner_id.name)
+        #     for order in self:
+        #         if order.website_id:
+        #             _logger.warning('=== CREANDO OPORTUNIDAD DESDE ECOMMERCE ===')
+        #             _logger.warning('Pedido: %s | Cliente: %s', order.name, order.partner_id.name)
 
-                    # Recolectar nombres de los productos del pedido
-                    product_names = ', '.join(order.order_line.mapped(lambda l: l.product_id.display_name))
+        #             # Recolectar nombres de los productos del pedido
+        #             product_names = ', '.join(order.order_line.mapped(lambda l: l.product_id.display_name))
 
-                    opportunity = order.env['crm.lead'].create({
-                        'name': f'Oportunidad desde tienda - {order.name}',
-                        'partner_id': order.partner_id.id,
-                        'user_id': order.user_id.id,
-                        'type': 'opportunity',
-                        'team_id': order.team_id.id,
-                        'description': (
-                                f'Pedido generado desde ecommerce. Total: {order.amount_total}\n'
-                                f'Productos solicitados: {product_names}\n'
-                                f'Actividad reciente: Usuario ha visitado la sección de información del fotógrafo.'
-                            ),  
-                    })
+        #             opportunity = order.env['crm.lead'].create({
+        #                 'name': f'Oportunidad desde tienda - {order.name}',
+        #                 'partner_id': order.partner_id.id,
+        #                 'user_id': order.user_id.id,
+        #                 'type': 'opportunity',
+        #                 'team_id': order.team_id.id,
+        #                 'description': (
+        #                         f'Pedido generado desde ecommerce. Total: {order.amount_total}\n'
+        #                         f'Productos solicitados: {product_names}\n'
+        #                         f'Actividad reciente: Usuario ha visitado la sección de información del fotógrafo.'
+        #                     ),  
+        #             })
 
-                    _logger.warning('Oportunidad creada: %s', opportunity.id)
+        #             _logger.warning('Oportunidad creada: %s', opportunity.id)
 
-            return res
+        #     return res
