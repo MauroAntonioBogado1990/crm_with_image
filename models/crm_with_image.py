@@ -70,26 +70,26 @@ class ProductTemplateWithOptimizedImage(models.Model):
     
     
 
-class SaleOrder(models.Model):
-    _inherit = 'sale.order'
+    class SaleOrder(models.Model):
+        _inherit = 'sale.order'
 
-    def action_confirm(self):
-        res = super().website_sale_main_button()
+        def action_confirm(self):
+            res = super().website_sale_main_button()
 
-        for order in self:
-            if order.website_id:  # Solo si proviene del eCommerce
-                _logger.warning('=== CREANDO OPORTUNIDAD DESDE ECOMMERCE ===')
-                _logger.warning('Pedido: %s | Cliente: %s', order.name, order.partner_id.name)
+            for order in self:
+                if order.website_id:  # Solo si proviene del eCommerce
+                    _logger.warning('=== CREANDO OPORTUNIDAD DESDE ECOMMERCE ===')
+                    _logger.warning('Pedido: %s | Cliente: %s', order.name, order.partner_id.name)
 
-                opportunity = order.env['crm.lead'].create({
-                    'name': f'Oportunidad desde tienda - {order.name}',
-                    'partner_id': order.partner_id.id,
-                    'user_id': order.user_id.id,
-                    'type': 'opportunity',
-                    'team_id': order.team_id.id,
-                    'description': f'Pedido generado desde ecommerce. Total: {order.amount_total}',
-                })
+                    opportunity = order.env['crm.lead'].create({
+                        'name': f'Oportunidad desde tienda - {order.name}',
+                        'partner_id': order.partner_id.id,
+                        'user_id': order.user_id.id,
+                        'type': 'opportunity',
+                        'team_id': order.team_id.id,
+                        'description': f'Pedido generado desde ecommerce. Total: {order.amount_total}',
+                    })
 
-                _logger.warning('Oportunidad creada: %s', opportunity.id)
+                    _logger.warning('Oportunidad creada: %s', opportunity.id)
 
-        return res
+            return res

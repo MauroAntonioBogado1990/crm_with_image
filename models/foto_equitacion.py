@@ -14,6 +14,12 @@ class FotosEquitacon(models.Model):
     name = fields.Char(string="Nombre")
     ubicacion = fields.Char(string="Enlace de imagen")
     year = fields.Date(string="Año del Evento")
+    image_ids = fields.One2many(
+        'fotos.equitacion.image.line',
+        'equitacion_id',
+        string='Imágenes'
+    )
+
     jump_height = fields.Selection([
         ('0.80', '0.80 m'),
         ('0.90', '0.90 m'),                                                                                                                                                                                                                                                                                                                                             
@@ -109,17 +115,46 @@ class FotosEquitacon(models.Model):
 
     def action_enviar_fotos_como_productos(self):
         for record in self:
-            urls = record._get_image_urls()
-            for url in urls:
-                processed = record._process_image_from_url(url, record.watermark_image)
-                if processed:
+            for image_line in record.image_ids:
+                try:
+                    if not image_line.image_file:
+                        continue
+
+                    image = Image.open(BytesIO(base64.b64decode(image_line.image_file))).convert("RGB")
+
+                    # Comprimir
+                    compressed_buffer = BytesIO()
+                    image.save(compressed_buffer, format='JPEG', quality=60)
+                    compressed_image = Image.open(BytesIO(compressed_buffer.getvalue()))
+
+                    # Marca de agua (si existe)
+                    if record.watermark_image:
+                        watermark = Image.open(BytesIO(base64.b64decode(record.watermark_image))).convert("RGBA")
+                        watermark = watermark.resize(
+                            (int(compressed_image.width * 0.3), int(compressed_image.height * 0.3))
+                        )
+                        watermark.putalpha(128)
+                        position = (
+                            compressed_image.width - watermark.width - 10,
+                            compressed_image.height - watermark.height - 10
+                        )
+                        base_rgba = compressed_image.convert("RGBA")
+                        base_rgba.paste(watermark, position, watermark)
+                        compressed_image = base_rgba.convert("RGB")
+
+                    final_output = BytesIO()
+                    compressed_image.save(final_output, format='JPEG', quality=70)
+                    image_encoded = base64.b64encode(final_output.getvalue())
+
+                    # Crear producto publicado
                     self.env['product.template'].create({
-                        'name': record.name or 'Foto de Equitación',
-                        'image_1920': processed,
+                        'name': image_line.filename or record.name or 'Foto de Equitación',
+                        'image_1920': image_encoded,
                         'website_published': True,
-                        'ubicacion': url,
-                        'original_image_url': url,  # ← Aquí se guarda el enlace original
                         'year': record.year,
                         'jump_height': record.jump_height,
                     })
+
+                except Exception as e:
+                    _logger.error(f"Error procesando imagen '{image_line.filename}': {e}")
     

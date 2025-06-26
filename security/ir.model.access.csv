@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_fotos,crm_with_image.foto_equitacion,model_fotos_equitacion,base.group_user,1,1,1,1
+access_fotos_equitacion_image_line,fotos.equitacion.image.line,model_fotos_equitacion_image_line,,1,1,1,1
 

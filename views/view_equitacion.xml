@@ -8,10 +8,16 @@
         <form string="Cargar Foto de Equitación">
             <group>
                 <field name="name"/>
-                <field name="ubicacion" /><!--Ubicacion de mi pc-->
+               
                 <field name="year"/>
                 <field name="jump_height"/>
                  <field name="watermark_image"/>
+                <field name="image_ids">
+                    <tree editable="bottom">
+                        <field name="filename"/>
+                        <field name="image_file"/>
+                    </tree>
+                    </field>
                  
                  
             </group>
@@ -25,11 +31,11 @@
                     class="btn-primary"
                     />
             <!--desde este boton se ejecuta la funcion para poder subir las fotos-->
-            <button name="action_subir_desde_carpeta"
+            <!-- <button name="action_subir_desde_carpeta"
             type="object"
             string="Subir desde carpeta de pc"
             class="btn-primary"
-            />
+            /> -->
             
 
         </form>
