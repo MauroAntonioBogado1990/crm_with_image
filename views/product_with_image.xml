@@ -10,15 +10,13 @@
          
                 <field name="watermark_image" widget="image"/>
                 <field name="optimized_image" widget="image" readonly="1"/>
-                <field name="ubicacion" widget="url" />
-                <field name="year" widget="url" />
-                <field name="jump_height" widget="url" />
+                
             </xpath>
     
         </field>
     </record>
     <!--vista que realiza el cambio de la funcionalidad del boton-->
-  <template id="photographer_info_template" name="Photographer Info">
+  <!-- <template id="photographer_info_template" name="Photographer Info">
     <t t-call="website.layout">
         <div class="container mt-5">
             <h2>Nombre Fotógrafo</h2>
@@ -32,9 +30,72 @@
             <a t-att-href="shop_url" class="btn btn-primary">Volver a la tienda</a>
         </div>
     </t>
+</template> -->
+<template id="photographer_info_template" name="Photographer Info">
+    <t t-call="website.layout">
+        <div class="container mt-5 mb-5">
+            <h2 class="text-center mb-4">Perfil del Fotógrafo</h2>
+            <form action="/photographer/save" method="post" class="row g-3 needs-validation">
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token"/>
+                
+                <div class="col-md-6">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" name="name" t-att-value="name" class="form-control" placeholder="Tu nombre completo" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Correo electrónico</label>
+                    <input type="email" name="email" t-att-value="email" class="form-control" placeholder="ejemplo@email.com" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Número de WhatsApp</label>
+                    <input type="text" name="tel" t-att-value="tel" class="form-control" placeholder="+54 9 ..." />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Cuenta de Instagram</label>
+                    <input type="text" name="instagram" t-att-value="instagram" class="form-control" placeholder="@tuusuario" />
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Información Bancaria</label>
+                    <textarea name="bank" class="form-control" rows="3" placeholder="Nombre del banco, número de cuenta, etc."><t t-esc="bank"/></textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Alias Bancario</label>
+                    <input type="text" name="alias" t-att-value="alias" class="form-control" placeholder="alias.banco" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">CBU / CVU</label>
+                    <input type="text" name="cbu_cvu" t-att-value="cbu_cvu" class="form-control" placeholder="000123456789..." />
+                </div>
+
+                <div class="col-12 text-center mt-4">
+                    <button type="submit" class="btn btn-success px-5">Guardar perfil</button>
+                    <a t-att-href="shop_url" class="btn btn-outline-secondary ms-3 px-5">Volver a la tienda</a>
+                </div>
+
+            </form>
+        </div>
+    </t>
 </template>
- 
- <template id="custom_navigation_button" inherit_id="website_sale.navigation_buttons">
+<!--template en el caso que no este el fotografo -->
+<template id="photographer_not_found_template" name="Photographer Not Found">
+    <t t-call="website.layout">
+        <div class="container mt-5 text-center">
+            <h3>No se encontró el perfil del fotógrafo</h3>
+            <p>Verificá que el perfil exista o volvé a la tienda.</p>
+            <a href="/" class="btn btn-secondary mt-3">Ir al inicio</a>
+            <a href="/photographer/info" class="btn btn-primary mt-3">Crear/Editar perfil</a>
+     
+        </div>
+    </t>
+</template>
+<!--vista que reemplaza funcionalidad del boton de finalizar compra-->
+<template id="custom_navigation_button" inherit_id="website_sale.navigation_buttons">
     <xpath expr="//a[@name='website_sale_main_button']" position="replace">
         <a role="button" name="website_sale_main_button"
            class="btn btn-primary w-100"
@@ -43,11 +104,7 @@
             <i class="fa fa-angle-right ms-2 fw-light"/>
         </a>
     </xpath>
-    
-     
-
 </template>
-
 
      
     
@@ -59,7 +116,3 @@
     
 
 </odoo>
-
-
-
-

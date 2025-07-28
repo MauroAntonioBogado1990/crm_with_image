@@ -11,10 +11,6 @@ class ProductTemplateWithOptimizedImage(models.Model):
 
     watermark_image = fields.Binary(string="Marca de Agua")
     optimized_image = fields.Binary(string="Imagen Optimizada")
-    ubicacion = fields.Char(string="Enlace de imagen")
-    year = fields.Date(string="Año del Evento" )
-    jump_height = fields.Selection([('0.80', '0.80 m'), ('0.90', '0.90 m'), ('1.00', '1.00 m')],string="Altura del Salto")
-    original_image_url = fields.Char(string="URL de Imagen Original")
 
 
     def _process_image(self, original_image, watermark_image=False):
@@ -70,54 +66,26 @@ class ProductTemplateWithOptimizedImage(models.Model):
     
     
 
-    class SaleOrder(models.Model):
-        _inherit = 'sale.order'
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
 
-        # def action_confirm(self):
-        #     res = super().website_sale_main_button()
+    def action_confirm(self):
+        res = super().website_sale_main_button()
 
-        #     for order in self:
-        #         if order.website_id:  # Solo si proviene del eCommerce
-        #             _logger.warning('=== CREANDO OPORTUNIDAD DESDE ECOMMERCE ===')
-        #             _logger.warning('Pedido: %s | Cliente: %s', order.name, order.partner_id.name)
+        for order in self:
+            if order.website_id:  # Solo si proviene del eCommerce
+                _logger.warning('=== CREANDO OPORTUNIDAD DESDE ECOMMERCE ===')
+                _logger.warning('Pedido: %s | Cliente: %s', order.name, order.partner_id.name)
 
-        #             opportunity = order.env['crm.lead'].create({
-        #                 'name': f'Oportunidad desde tienda - {order.name}',
-        #                 'partner_id': order.partner_id.id,
-        #                 'user_id': order.user_id.id,
-        #                 'type': 'opportunity',
-        #                 'team_id': order.team_id.id,
-        #                 'description': f'Pedido generado desde ecommerce. Total: {order.amount_total}',
-        #             })
+                opportunity = order.env['crm.lead'].create({
+                    'name': f'Oportunidad desde tienda - {order.name}',
+                    'partner_id': order.partner_id.id,
+                    'user_id': order.user_id.id,
+                    'type': 'opportunity',
+                    'team_id': order.team_id.id,
+                    'description': f'Pedido generado desde ecommerce. Total: {order.amount_total}',
+                })
 
-        #             _logger.warning('Oportunidad creada: %s', opportunity.id)
+                _logger.warning('Oportunidad creada: %s', opportunity.id)
 
-        #     return res
-        
-        # def action_confirm(self):
-        #     res = super().action_confirm()
-
-        #     for order in self:
-        #         if order.website_id:
-        #             _logger.warning('=== CREANDO OPORTUNIDAD DESDE ECOMMERCE ===')
-        #             _logger.warning('Pedido: %s | Cliente: %s', order.name, order.partner_id.name)
-
-        #             # Recolectar nombres de los productos del pedido
-        #             product_names = ', '.join(order.order_line.mapped(lambda l: l.product_id.display_name))
-
-        #             opportunity = order.env['crm.lead'].create({
-        #                 'name': f'Oportunidad desde tienda - {order.name}',
-        #                 'partner_id': order.partner_id.id,
-        #                 'user_id': order.user_id.id,
-        #                 'type': 'opportunity',
-        #                 'team_id': order.team_id.id,
-        #                 'description': (
-        #                         f'Pedido generado desde ecommerce. Total: {order.amount_total}\n'
-        #                         f'Productos solicitados: {product_names}\n'
-        #                         f'Actividad reciente: Usuario ha visitado la sección de información del fotógrafo.'
-        #                     ),  
-        #             })
-
-        #             _logger.warning('Oportunidad creada: %s', opportunity.id)
-
-        #     return res
+        return res
