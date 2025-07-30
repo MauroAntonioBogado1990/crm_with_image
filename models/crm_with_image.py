@@ -17,6 +17,8 @@ class ProductTemplateWithOptimizedImage(models.Model):
     #bono = fields.Boolean(String="Bono")
     #se agregae esta campo para poder asociar con las lineas de las fotos
     equitacion_id = fields.Many2one('fotos.equitacion', string='Foto de Equitación', ondelete='cascade')
+    #se agrega la referencia al fotografo
+    photographer_id = fields.Many2one('res.partner', string='Fotógrafo', domain="[('is_photographer', '=', True)]",ondelete='set null',)
 
     def _process_image(self, original_image, watermark_image=False):
         """ Reduce el tamaño y peso de la imagen, aplica una marca de agua con transparencia. """
@@ -94,3 +96,13 @@ class SaleOrder(models.Model):
                 _logger.warning('Oportunidad creada: %s', opportunity.id)
 
         return res
+
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+
+    watermark_image = fields.Binary(related='product_tmpl_id.watermark_image', store=True)
+    optimized_image = fields.Binary(related='product_tmpl_id.optimized_image', store=True)
+    year = fields.Date(related='product_tmpl_id.year', store=True)
+    jump_height = fields.Selection(related='product_tmpl_id.jump_height', store=True)
+    equitacion_id = fields.Many2one(related='product_tmpl_id.equitacion_id', store=True)
+    photographer_id = fields.Many2one(related='product_tmpl_id.photographer_id', store=True)

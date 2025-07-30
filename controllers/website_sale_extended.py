@@ -91,13 +91,13 @@ class WebsiteSaleExtended(http.Controller):
         partner = request.env.user.partner_id
 
         # Solo si es fotógrafo
-        if partner and partner.is_photographer:
-            partner.name = post.get('name')
-            partner.email = post.get('email')
-            partner.phone = post.get('tel')
-            partner.instagram_account = post.get('instagram')
-            partner.bank_account_info = post.get('bank')
-            partner.bank_alias = post.get('alias')
-            partner.bank_cbu_cvu = post.get('cbu_cvu')
+        #if partner and partner.is_photographer:
+        partner.name = post.get('name')
+        partner.email = post.get('email')
+        partner.phone = post.get('tel')
+        partner.instagram_account = post.get('instagram')
+        partner.bank_account_info = post.get('bank')
+        partner.bank_alias = post.get('alias')
+        partner.bank_cbu_cvu = post.get('cbu_cvu')
 
         return request.redirect('/photographer/info')

@@ -12,6 +12,8 @@
                 <field name="optimized_image" widget="image" readonly="1"/>
                 <field name="year"/>
                 <field name="jump_height"/>
+                <field name="photographer_id"/>
+                
 
             </xpath>
     
