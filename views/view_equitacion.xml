@@ -5,39 +5,25 @@
     <field name="name">fotos.equitacion.form</field>
     <field name="model">fotos.equitacion</field>
     <field name="arch" type="xml">
-        <form string="Cargar Foto de Equitación">
+        <form string="Cargar Foto de Equitación" data-model="fotos.equitacion">
             <group>
-                <field name="name"/>
-               
-                <field name="year"/>
-                <field name="jump_height"/>
-                 <field name="watermark_image"/>
-                <field name="image_ids">
-                    <tree editable="bottom">
-                        <field name="filename"/>
-                        <field name="image_file"/>
-                    </tree>
-                    </field>
-                 
-                 
+                <field name="name" invisible="1"/>
+                <field name="public_category_id"/>
+                <field name="year" invisible="0"/>
+                <field name="jump_height" invisible="1"/>
+                <!-- <field name="link" widget="url"/> -->
+                <field name="watermark_image"/>
+
+                <!--NUEVO CAMPO para subir múltiples imágenes desde la pc-->
+                <field name="mass_upload_images" widget="many2many_binary" options="{'multiple': True}" filename="filename" string="Subir imágenes desde tu computadora"/>
+
+                <!--boton para procesar estas imágenes en lote-->
+                <button name="action_enviar_varias_fotos"
+                        string="Enviar imágenes como productos"
+                        type="object"
+                        class="btn-primary"
+                        context="{'from_mass_upload': True}"/>
             </group>
-            
-
-              
-           <!--se enviarían al sitio web-->
-            <button name="action_enviar_fotos_como_productos"
-                    type="object"
-                    string="Enviar al sitio web"
-                    class="btn-primary"
-                    />
-            <!--desde este boton se ejecuta la funcion para poder subir las fotos-->
-            <!-- <button name="action_subir_desde_carpeta"
-            type="object"
-            string="Subir desde carpeta de pc"
-            class="btn-primary"
-            /> -->
-            
-
         </form>
     </field>
 </record>
@@ -48,6 +34,5 @@
     parent="website.menu_site"
     sequence="80"
     action="crm_with_image.action_fotos_equitacion"/>
-
 
 </odoo>

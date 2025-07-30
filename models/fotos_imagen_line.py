@@ -1,4 +1,3 @@
-# models/fotos_imagen_line.py
 from odoo import models, fields
 
 class FotosEquitacionImagenLine(models.Model):
