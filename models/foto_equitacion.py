@@ -27,6 +27,8 @@ class FotosEquitacon(models.Model):
     image_ids = fields.One2many('fotos.equitacion.image.line', 'equitacion_id', string='Imágenes')
     mass_upload_images = fields.Many2many('ir.attachment', string="Imágenes Cargadas")
     #link = fields.Char(string="Link externo")
+    #bono
+    bono = fields.Boolean(string="bono")
     public_category_id = fields.Many2one(
         'product.public.category',
         string='Categoría de destino',

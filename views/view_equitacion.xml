@@ -5,19 +5,15 @@
     <field name="name">fotos.equitacion.form</field>
     <field name="model">fotos.equitacion</field>
     <field name="arch" type="xml">
-        <form string="Cargar Foto de Equitación" data-model="fotos.equitacion">
+        <form string="Cargar Foto de Equitación">
             <group>
-                <field name="name" invisible="1"/>
+                <field name="name" invisible="0"/>
                 <field name="public_category_id"/>
-                <field name="year" invisible="0"/>
-                <field name="jump_height" invisible="1"/>
-                <!-- <field name="link" widget="url"/> -->
+                <field name="year"/>
+                <field name="jump_height" invisible="0"/>
+                <field name="bono"/>
                 <field name="watermark_image"/>
-
-                <!--NUEVO CAMPO para subir múltiples imágenes desde la pc-->
                 <field name="mass_upload_images" widget="many2many_binary" options="{'multiple': True}" filename="filename" string="Subir imágenes desde tu computadora"/>
-
-                <!--boton para procesar estas imágenes en lote-->
                 <button name="action_enviar_varias_fotos"
                         string="Enviar imágenes como productos"
                         type="object"
@@ -28,9 +24,18 @@
     </field>
 </record>
 
+<record id="action_fotos_equitacion" model="ir.actions.act_window">
+    <field name="name">Fotos de Equitación</field>
+    <field name="res_model">fotos.equitacion</field>
+    <field name="view_mode">form</field> 
+    <field name="view_id" ref="view_form_fotos_equitacion"/>
+    <field name="target">current</field> 
+</record>
+
+
 <menuitem
     id="menu_fotos_equitacion"
-    name="Cargar Foto"
+    name="Procesar"
     parent="website.menu_site"
     sequence="80"
     action="crm_with_image.action_fotos_equitacion"/>

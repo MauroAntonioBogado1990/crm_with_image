@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+<record id="view_form_config_photo" model="ir.ui.view">
+    <field name="name">fotos.config.form</field>
+    <field name="model">res.partner</field>
+    <field name="arch" type="xml">
+        <form string="Configuración del Fotógrafo">
+            <sheet>
+                <group>
+                    <field name="is_photographer"/>
+                </group>
+
+                <group string="Datos del Fotógrafo">
+                    <field name="name"/>
+                    <field name="email"/>
+                    <field name="phone" string="WhatsApp"/>
+                    <field name="instagram_account"/>
+                 
+                    <!-- <field name="watermark_image"/> -->
+                </group>
+                  <group string="Cuentas Bancarias">
+                    <field name="bank_account_info"/>
+                    <field name="bank_alias"/>
+                    <field name="bank_cbu_cvu"/>
+                    <!-- <field name="watermark_image"/> -->
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+
+<record id="action_config_photo" model="ir.actions.act_window">
+    <field name="name">Cnonfiguracion del forografo</field>
+    <field name="res_model">res.partner</field>
+    <field name="view_mode">form</field> 
+    <field name="view_id" ref="view_form_config_photo"/>
+    <field name="target">current</field> 
+</record>
+
+
+<menuitem
+    id="menu_configuration_photographer"
+    name="Configuración"
+    parent="website.menu_site"
+    sequence="85"
+    action="crm_with_image.action_config_photo"/>
+
+
+    <!-- <record id="menu_photographer_info" model="website.menu">
+        <field name="name">Configuración</field>
+        <field name="url">/photographer/info</field>
+        <field name="sequence" eval="85"/>
+        <field name="parent_id" ref="website.menu_site"/>
+        </record> -->
+   
+
+</odoo>

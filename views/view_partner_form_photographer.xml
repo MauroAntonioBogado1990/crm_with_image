@@ -10,7 +10,7 @@
             <group string="Datos del Fotógrafo" invisible="is_photographer != 'False'">
                                               
                 <field name="instagram_account"/>
-                <field name="bank_account_info"/>
+                <field name="bank_account_info"/> 
                 <field name="bank_alias"/>
                 <field name="bank_cbu_cvu"/>
             </group>

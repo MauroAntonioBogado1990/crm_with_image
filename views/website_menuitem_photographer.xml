@@ -3,19 +3,26 @@
     <data>
 
         <!-- Acción para redirigir al perfil del fotógrafo -->
-        <record id="action_photographer_info_url" model="ir.actions.act_url">
+        <!-- <record id="action_photographer_info_url" model="ir.actions.act_url">
             <field name="name">Perfil del Fotógrafo</field>
             <field name="url">/photographer/info</field>
             <field name="target">self</field>
-        </record>
+        </record> -->
 
         <!-- Menú en el sitio web (aparece en la barra superior) -->
-        <record id="menu_photographer_info_shop" model="website.menu">
+        <!-- <record id="menu_photographer_info_shop" model="website.menu">
             <field name="name">Mi Perfil Fotógrafo</field>
             <field name="url">/photographer/info</field>
             <field name="sequence" eval="90"/>
             <field name="parent_id" ref="website.main_menu"/>
-        </record>
+        </record> -->
+
+        <!-- <record id="menu_photographer_info" model="website.menu">
+        <field name="name">Configuración</field>
+        <field name="url">/photographer/info</field>
+        <field name="sequence" eval="85"/>
+        <field name="parent_id" ref="website.menu_site"/>
+        </record> -->
 
     </data>
 </odoo>

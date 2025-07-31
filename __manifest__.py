@@ -14,7 +14,7 @@
         'views/website_menu.xml',
         'views/view_equitacion.xml',
         'views/product_with_image.xml',
-        
+        'views/view_photographer.xml',
         
     ],
     'assets': {
