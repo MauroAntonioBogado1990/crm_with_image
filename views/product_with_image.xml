@@ -13,6 +13,7 @@
                 <field name="year"/>
                 <field name="jump_height"/>
                 <field name="photographer_id"/>
+                <!-- <field name="is_category_logo"/> -->
                 
 
             </xpath>
@@ -112,7 +113,17 @@
 
      
     
-    
+<!--agregamos el campo para poder traer la categoria-->    
+<!-- <record id="view_public_category_form" model="ir.ui.view">
+    <field name="name">product.public.category.form.logo</field>
+    <field name="model">product.public.category</field>
+    <field name="inherit_id" ref="website_sale.product_public_category_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='name']" position="after">
+            <field name="image_1920" widget="image"/>
+        </xpath>
+    </field>
+</record>                    -->
 
 
     

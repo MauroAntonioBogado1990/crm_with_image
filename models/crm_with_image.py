@@ -19,6 +19,7 @@ class ProductTemplateWithOptimizedImage(models.Model):
     equitacion_id = fields.Many2one('fotos.equitacion', string='Foto de Equitación', ondelete='cascade')
     #se agrega la referencia al fotografo
     photographer_id = fields.Many2one('res.partner', string='Fotógrafo', domain="[('is_photographer', '=', True)]",ondelete='set null',)
+    #is_category_logo = fields.Boolean(string="Usar como imagen de categoría")
 
     def _process_image(self, original_image, watermark_image=False):
         """ Reduce el tamaño y peso de la imagen, aplica una marca de agua con transparencia. """
@@ -106,3 +107,4 @@ class ProductProduct(models.Model):
     jump_height = fields.Selection(related='product_tmpl_id.jump_height', store=True)
     equitacion_id = fields.Many2one(related='product_tmpl_id.equitacion_id', store=True)
     photographer_id = fields.Many2one(related='product_tmpl_id.photographer_id', store=True)
+    #is_category_logo = fields.Boolean(string="Usar como imagen de categoría")

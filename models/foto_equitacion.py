@@ -26,16 +26,24 @@ class FotosEquitacon(models.Model):
     watermark_image = fields.Binary(string="Marca de Agua")
     image_ids = fields.One2many('fotos.equitacion.image.line', 'equitacion_id', string='Imágenes')
     mass_upload_images = fields.Many2many('ir.attachment', string="Imágenes Cargadas")
+    #agregamos la opacidad
+    opacity_value = fields.Integer(string="Opacidad del Watermark",default=128,help="Valor entre 0 (invisible) y 255 (completamente visible)")
     #link = fields.Char(string="Link externo")
     #bono
-    bono = fields.Boolean(string="bono")
+    bono = fields.Boolean(string="Bono")
     public_category_id = fields.Many2one(
         'product.public.category',
         string='Categoría de destino',
         required=False
     )
-
-    def _process_image(self, original_image_b64, watermark_image_b64=False):
+    
+    #realizamos el control de opacidad
+    @api.constrains('opacity_value')
+    def _check_opacity_range(self):
+        for record in self:
+            if not 0 <= record.opacity_value <= 255:
+                raise ValidationError("La opacidad debe estar entre 0 y 255.")
+    def _process_image(self, original_image_b64, watermark_image_b64=False, opacity=128):
         if not original_image_b64:
             return False
 
@@ -62,6 +70,16 @@ class FotosEquitacon(models.Model):
 
                 # Crear capa transparente para mezclar
                 layer = Image.new('RGBA', compressed_image.size, (0, 0, 0, 0))
+                #le damos opacidad
+                # Asegurar modo RGBA
+                if watermark.mode != 'RGBA':
+                    watermark = watermark.convert('RGBA')
+
+                # Ajustar opacidad según parámetro
+                alpha = watermark.split()[3]
+                alpha = alpha.point(lambda p: int(p * (opacity / 255)))
+                watermark.putalpha(alpha)
+
                 layer.paste(watermark, (pos_x, pos_y), watermark)
                 compressed_image = Image.alpha_composite(compressed_image, layer)
 
@@ -81,7 +99,11 @@ class FotosEquitacon(models.Model):
             raise UserError("Debés seleccionar una categoría de destino.")
 
         for attachment in self.mass_upload_images:
-            processed_image_b64 = self._process_image(attachment.datas, self.watermark_image)
+            processed_image_b64 = self._process_image(
+                attachment.datas,
+                self.watermark_image,
+                opacity=self.opacity_value or 128
+            )
             if not processed_image_b64:
                 continue
 
@@ -91,10 +113,16 @@ class FotosEquitacon(models.Model):
                 'website_published': True,
                 'year': self.year,
                 'jump_height': self.jump_height,
-                #'link': self.link,
                 'equitacion_id': self.id,
                 'public_categ_ids': [(6, 0, [self.public_category_id.id])],
+                #'is_category_logo': logo_line and logo_line[0].id == attachment.id,  # si coincide con la imagen marcada
+
             })
+
+        # 🔄 Asignar imagen destacada como logo de categoría
+        # logo_line = self.image_ids.filtered(lambda l: l.is_category_logo and l.image_data)
+        # if logo_line and not self.public_category_id.image_1920:
+        #     self.public_category_id.image_1920 = logo_line[0].image_data
 
         return {'type': 'ir.actions.act_window_close'}
 

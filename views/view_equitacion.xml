@@ -13,6 +13,7 @@
                 <field name="jump_height" invisible="0"/>
                 <field name="bono"/>
                 <field name="watermark_image"/>
+                <field name="opacity_value"/>
                 <field name="mass_upload_images" widget="many2many_binary" options="{'multiple': True}" filename="filename" string="Subir imágenes desde tu computadora"/>
                 <button name="action_enviar_varias_fotos"
                         string="Enviar imágenes como productos"
