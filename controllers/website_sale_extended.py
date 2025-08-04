@@ -151,6 +151,11 @@ class WebsiteSaleExtended(http.Controller):
 
         return request.redirect('/photographer/info')
     
+   #con este controller se puede ver solo los contactos que son de tipo fotografo
+
+    
+    
+
 
 
 

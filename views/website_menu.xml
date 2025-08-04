@@ -10,32 +10,36 @@
 <!--template de agregado de datos de fotrago en la imagen del producto-->
     <template id="product_photographer_data" inherit_id="website_sale.product">
         <xpath expr="//div[@id='product_details']" position="inside">
-    <!-- <t t-if="product.photographer_id and product.photographer_id.is_photographer"> -->
+          
+
+          <t t-if="product.photographer_id">
                 <div class="mt-3">
                     <h5>📸 Información del Fotógrafo</h5>
                     <ul>
-                    <li><strong>Nombre:</strong> <t t-esc="product.photographer_id.name"/></li>
-                    <li><strong>Email:</strong> <t t-esc="product.photographer_id.email or 'No disponible'"/></li>
-                    <li><strong>WhatsApp:</strong> <t t-esc="product.photographer_id.phone or 'No disponible'"/></li>
-                    <li><strong>Instagram:</strong> <t t-esc="product.photographer_id.instagram_account or 'No disponible'"/></li>
-                    <li><strong>Alias Bancario:</strong> <t t-esc="product.photographer_id.bank_alias or 'No disponible'"/></li>
-                    <li><strong>CBU/CVU:</strong> <t t-esc="product.photographer_id.bank_cbu_cvu or 'No disponible'"/></li>
- 
+                        <li><strong>Nombre:</strong> <t t-esc="product.photographer_id.name"/></li>
+                        <li><strong>Email:</strong> <t t-esc="product.photographer_id.email or 'No disponible'"/></li>
+                        <li><strong>WhatsApp:</strong> <t t-esc="product.photographer_id.phone or 'No disponible'"/></li>
+                        <li><strong>Instagram:</strong> <t t-esc="product.photographer_id.instagram_account or 'No disponible'"/></li>
+                        <li><strong>Alias Bancario:</strong> <t t-esc="product.photographer_id.bank_alias or 'No disponible'"/></li>
+                        <li><strong>CBU/CVU:</strong> <t t-esc="product.photographer_id.bank_cbu_cvu or 'No disponible'"/></li>
                     </ul>
                 </div>
+            </t>
+            <t t-if="user and user.partner_id.id != user.env.ref('base.public_user').id">
 
                 <div class="mt-3">
                     <h5>Datos Clientes</h5>
                     <h6>Para estar en contacto solicitamos estos datos</h6>
                     <ul>
-                    <li><strong>Nombre:</strong> <t t-esc="product.name"/></li>
-                    <!-- <li><strong>Email:</strong> <t t-esc="product.partner_id.email or 'No disponible'"/></li>
-                    <li><strong>WhatsApp:</strong> <t t-esc="product.partner_id.phone or 'No disponible'"/></li>
-                    <li><strong>Instagram:</strong> <t t-esc="product.partner_id.instagram_account or 'No disponible'"/></li> -->
+                     <li><strong>Nombre:</strong> <t t-esc="user.partner_id.name"/></li>
+                    <li><strong>Email:</strong> <t t-esc="user.partner_id.email or 'No disponible'"/></li>
+                    <li><strong>WhatsApp:</strong> <t t-esc="user.partner_id.phone or 'No disponible'"/></li>
+                    <li><strong>Instagram:</strong> <t t-esc="user.partner_id.instagram_account or 'No disponible'"/></li>
+   
                     </ul>
                 </div>
-            <!-- </t> -->
-        </xpath>
+             </t>
+                    </xpath>
     </template>
   </data>
 </odoo>

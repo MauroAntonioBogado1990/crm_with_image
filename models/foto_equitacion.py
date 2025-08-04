@@ -36,10 +36,10 @@ class FotosEquitacon(models.Model):
         string='Categoría de destino',
         required=False
     )
-    # photographer_id = fields.Many2one(
-    # 'res.partner',
-    # string='Fotógrafo Responsable',
-    # domain="[('is_photographer', '=', True)]")
+    photographer_id = fields.Many2one(
+    'res.partner',
+    string='Fotógrafo Responsable',
+    domain="[('is_photographer', '=', True)]")
     #realizamos el control de opacidad
     @api.constrains('opacity_value')
     def _check_opacity_range(self):
