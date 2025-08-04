@@ -14,12 +14,13 @@ class ProductTemplateWithOptimizedImage(models.Model):
     year = fields.Date(string="Año del Evento")
     jump_height = fields.Selection([('0.80', '0.80 m'), ('0.90', '0.90 m'), ('1.00', '1.00 m')],string="Altura del Salto")
     #campo bono
-    #bono = fields.Boolean(String="Bono")
+    bono = fields.Boolean(String="Bono")
     #se agregae esta campo para poder asociar con las lineas de las fotos
     equitacion_id = fields.Many2one('fotos.equitacion', string='Foto de Equitación', ondelete='cascade')
     #se agrega la referencia al fotografo
     photographer_id = fields.Many2one('res.partner', string='Fotógrafo', domain="[('is_photographer', '=', True)]",ondelete='set null',)
     #is_category_logo = fields.Boolean(string="Usar como imagen de categoría")
+    link = fields.Char(string="Link externo")
 
     def _process_image(self, original_image, watermark_image=False):
         """ Reduce el tamaño y peso de la imagen, aplica una marca de agua con transparencia. """
@@ -97,6 +98,7 @@ class SaleOrder(models.Model):
                 _logger.warning('Oportunidad creada: %s', opportunity.id)
 
         return res
+   
 
 class ProductProduct(models.Model):
     _inherit = 'product.product'
@@ -108,3 +110,8 @@ class ProductProduct(models.Model):
     equitacion_id = fields.Many2one(related='product_tmpl_id.equitacion_id', store=True)
     photographer_id = fields.Many2one(related='product_tmpl_id.photographer_id', store=True)
     #is_category_logo = fields.Boolean(string="Usar como imagen de categoría")
+
+class SaleOrder(models.Model):
+        _inherit = 'crm.lead'    
+
+        link_carpeta = fields.Char(string="Link externo")

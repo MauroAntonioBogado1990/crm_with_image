@@ -27,8 +27,8 @@ class FotosEquitacon(models.Model):
     image_ids = fields.One2many('fotos.equitacion.image.line', 'equitacion_id', string='Imágenes')
     mass_upload_images = fields.Many2many('ir.attachment', string="Imágenes Cargadas")
     #agregamos la opacidad
-    opacity_value = fields.Integer(string="Opacidad del Watermark",default=128,help="Valor entre 0 (invisible) y 255 (completamente visible)")
-    #link = fields.Char(string="Link externo")
+    opacity_value = fields.Integer(string="Opacidad de Marca de Agua",default=128,help="Valor entre 0 (invisible) y 255 (completamente visible)")
+    link = fields.Char(string="Link externo")
     #bono
     bono = fields.Boolean(string="Bono")
     public_category_id = fields.Many2one(
@@ -36,10 +36,10 @@ class FotosEquitacon(models.Model):
         string='Categoría de destino',
         required=False
     )
-    photographer_id = fields.Many2one(
-    'res.partner',
-    string='Fotógrafo Responsable',
-    domain="[('is_photographer', '=', True)]")
+    # photographer_id = fields.Many2one(
+    # 'res.partner',
+    # string='Fotógrafo Responsable',
+    # domain="[('is_photographer', '=', True)]")
     #realizamos el control de opacidad
     @api.constrains('opacity_value')
     def _check_opacity_range(self):
@@ -116,6 +116,7 @@ class FotosEquitacon(models.Model):
                 'website_published': True,
                 'year': self.year,
                 'jump_height': self.jump_height,
+                'link': self.link,
                 'equitacion_id': self.id,
                 'public_categ_ids': [(6, 0, [self.public_category_id.id])],
                 #'is_category_logo': logo_line and logo_line[0].id == attachment.id,  # si coincide con la imagen marcada

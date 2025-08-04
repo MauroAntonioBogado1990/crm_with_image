@@ -23,6 +23,17 @@
  
                     </ul>
                 </div>
+
+                <div class="mt-3">
+                    <h5>Datos Clientes</h5>
+                    <h6>Para estar en contacto solicitamos estos datos</h6>
+                    <ul>
+                    <li><strong>Nombre:</strong> <t t-esc="product.name"/></li>
+                    <!-- <li><strong>Email:</strong> <t t-esc="product.partner_id.email or 'No disponible'"/></li>
+                    <li><strong>WhatsApp:</strong> <t t-esc="product.partner_id.phone or 'No disponible'"/></li>
+                    <li><strong>Instagram:</strong> <t t-esc="product.partner_id.instagram_account or 'No disponible'"/></li> -->
+                    </ul>
+                </div>
             <!-- </t> -->
         </xpath>
     </template>
