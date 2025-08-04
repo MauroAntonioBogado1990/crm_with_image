@@ -61,6 +61,7 @@ class WebsiteSaleExtended(http.Controller):
 
         # Crear la oportunidad si el usuario está autenticado (o adaptarla a 'public' si es necesario)
         if user and user.id != request.env.ref('base.public_user').id:
+            description = 'El usuario ha visitado la sección de información del fotógrafo.'
 
             if order and order.order_line:
                 for line in order.order_line:
@@ -69,6 +70,9 @@ class WebsiteSaleExtended(http.Controller):
                     link = template.link or 'No especificado'
                     description += (
                         f"\nProducto: {product.display_name}"
+                        f" Interés en fotografía del producto: {product.name}\n"
+                        f"Año del Evento: {template.year or 'No indicado'}\n"
+                        f"Altura: {template.jump_height or 'Sin especificar'}\n"
                         #f"\nLink externo: {link}"
                     ) 
   
