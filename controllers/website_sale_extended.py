@@ -102,9 +102,6 @@ class WebsiteSaleExtended(http.Controller):
             # Si no se encuentra fotógrafo, se puede mostrar plantilla genérica o vacía
             values = {}
 
-
-
-
         #Original
         # values = {
         #     'name': 'Juan Pérez',

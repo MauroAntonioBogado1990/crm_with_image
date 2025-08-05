@@ -18,7 +18,25 @@ class ProductTemplateWithOptimizedImage(models.Model):
     #se agregae esta campo para poder asociar con las lineas de las fotos
     equitacion_id = fields.Many2one('fotos.equitacion', string='Foto de Equitación', ondelete='cascade')
     #se agrega la referencia al fotografo
-    photographer_id = fields.Many2one('res.partner', string='Fotógrafo', domain="[('is_photographer', '=', True)]",ondelete='set null',)
+    #photographer_id = fields.Many2one('res.partner', string='Fotógrafo', domain="[('is_photographer', '=', True)]",ondelete='set null',)
+    photographer_id = fields.Many2one(
+        'res.partner',
+        string='Fotógrafo Responsable',
+        compute='_compute_photographer_id',
+        store=True,
+        domain="[('is_photographer', '=', True)]"
+    )
+
+    @api.depends('equitacion_id.photographer_id')
+    def _compute_photographer_id(self):
+        for template in self:
+            template.photographer_id = template.equitacion_id.photographer_id
+
+
+
+
+
+
     #is_category_logo = fields.Boolean(string="Usar como imagen de categoría")
     link = fields.Char(string="Link externo")
 
@@ -108,7 +126,25 @@ class ProductProduct(models.Model):
     year = fields.Date(related='product_tmpl_id.year', store=True)
     jump_height = fields.Selection(related='product_tmpl_id.jump_height', store=True)
     equitacion_id = fields.Many2one(related='product_tmpl_id.equitacion_id', store=True)
-    photographer_id = fields.Many2one(related='product_tmpl_id.photographer_id', store=True)
+    #photographer_id = fields.Many2one(related='product_tmpl_id.photographer_id', store=True,domain="[('is_photographer', '=', True)]")
+    
+    photographer_id = fields.Many2one(
+        'res.partner',
+        string='Fotógrafo Responsable',
+        compute='_compute_photographer_id',
+        store=True,
+        domain="[('is_photographer', '=', True)]"
+    )
+
+    @api.depends('equitacion_id.photographer_id')
+    def _compute_photographer_id(self):
+        for template in self:
+            template.photographer_id = template.equitacion_id.photographer_id
+
+    
+
+
+    
     #is_category_logo = fields.Boolean(string="Usar como imagen de categoría")
 
 class SaleOrder(models.Model):

@@ -40,6 +40,9 @@ class FotosEquitacon(models.Model):
     'res.partner',
     string='Fotógrafo Responsable',
     domain="[('is_photographer', '=', True)]")
+    
+
+
     #realizamos el control de opacidad
     @api.constrains('opacity_value')
     def _check_opacity_range(self):
