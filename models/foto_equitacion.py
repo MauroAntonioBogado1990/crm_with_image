@@ -133,3 +133,12 @@ class FotosEquitacon(models.Model):
 
         return {'type': 'ir.actions.act_window_close'}
 
+    #agregamos metodo para visualizar como portada
+    def get_cover_image(self):
+        # Buscar imagen marcada como portada
+        cover = self.image_line_ids.filtered(lambda img: img.is_cover)
+        if cover:
+            return cover[0].image_file
+
+        # Si ninguna marcada, devolver la primera subida
+        return self.image_line_ids.sorted(key=lambda img: img.id)[0].image_file if self.image_line_ids else False
