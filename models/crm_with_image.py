@@ -31,11 +31,8 @@ class ProductTemplateWithOptimizedImage(models.Model):
     def _compute_photographer_id(self):
         for template in self:
             template.photographer_id = template.equitacion_id.photographer_id
-
-
-
-
-
+    
+    
 
     #is_category_logo = fields.Boolean(string="Usar como imagen de categoría")
     link = fields.Char(string="Link externo")
@@ -83,12 +80,33 @@ class ProductTemplateWithOptimizedImage(models.Model):
         if 'image_1920' in vals:
             vals['optimized_image'] = self._process_image(vals['image_1920'], vals.get('watermark_image'))
             vals['image_1920'] = vals['optimized_image']  # Reemplazar imagen original
+        # Si no se define photographer_id ni equitacion_id, se asigna el primero disponible
+        if not vals.get('photographer_id') and not vals.get('equitacion_id'):
+            default_photographer = self.env['res.partner'].search(
+                [('is_photographer', '=', True)],
+                order='id asc',
+                limit=1
+            )
+            if default_photographer:
+                vals['photographer_id'] = default_photographer.id
+
         return super(ProductTemplateWithOptimizedImage, self).create(vals)
+        #return super(ProductTemplateWithOptimizedImage, self).create(vals)
 
     def write(self, vals):
         if 'image_1920' in vals:
             vals['optimized_image'] = self._process_image(vals['image_1920'], vals.get('watermark_image'))
             vals['image_1920'] = vals['optimized_image']  # Reemplazar imagen original
+        if 'photographer_id' not in vals and not self.equitacion_id:
+            default_photographer = self.env['res.partner'].search(
+                [('is_photographer', '=', True)],
+                order='id asc',
+                limit=1
+            )
+            if default_photographer:
+                vals['photographer_id'] = default_photographer.id
+
+        #return super().write(vals)
         return super(ProductTemplateWithOptimizedImage, self).write(vals)
     
     
