@@ -18,14 +18,14 @@ class ProductTemplateWithOptimizedImage(models.Model):
     #se agregae esta campo para poder asociar con las lineas de las fotos
     equitacion_id = fields.Many2one('fotos.equitacion', string='Foto de Equitación', ondelete='cascade')
     #se agrega la referencia al fotografo
-    #photographer_id = fields.Many2one('res.partner', string='Fotógrafo', domain="[('is_photographer', '=', True)]",ondelete='set null',)
-    photographer_id = fields.Many2one(
-        'res.partner',
-        string='Fotógrafo Responsable',
-        compute='_compute_photographer_id',
-        store=True,
-        domain="[('is_photographer', '=', True)]"
-    )
+    photographer_id = fields.Many2one('res.partner', string='Fotógrafo', domain="[('is_photographer', '=', True)]",ondelete='set null')
+    # photographer_id = fields.Many2one(
+    #     'res.partner',
+    #     string='Fotógrafo Responsable',
+    #     compute='_compute_photographer_id',
+    #     store=True,
+    #     domain="[('is_photographer', '=', True)]"
+    # )
 
     @api.depends('equitacion_id.photographer_id')
     def _compute_photographer_id(self):
@@ -74,15 +74,27 @@ class ProductTemplateWithOptimizedImage(models.Model):
         except Exception as e:
             _logger.error(f"Error al procesar imagen: {e}")
             return False
+    
+
 
     @api.model
     def create(self, vals):
+        # Procesar imagen si está presente
         if 'image_1920' in vals:
             vals['optimized_image'] = self._process_image(vals['image_1920'], vals.get('watermark_image'))
-            vals['image_1920'] = vals['optimized_image']  # Reemplazar imagen original
-        # Si no se define photographer_id ni equitacion_id, se asigna el primero disponible
-        if not vals.get('photographer_id') and not vals.get('equitacion_id'):
-        #if 'photographer_id' not in vals and not self.equitacion_id:
+            vals['image_1920'] = vals['optimized_image']
+
+        # Si se define equitacion_id, copiar datos relacionados
+        if vals.get('equitacion_id'):
+            equitacion = self.env['fotos.equitacion'].browse(vals['equitacion_id'])
+            vals.update({
+                'year': equitacion.year,
+                'jump_height': equitacion.jump_height,
+                'photographer_id': equitacion.photographer_id.id,
+            })
+
+        # Si no hay fotógrafo definido, asignar el primero disponible
+        if not vals.get('photographer_id'):
             default_photographer = self.env['res.partner'].search(
                 [('is_photographer', '=', True)],
                 order='id asc',
@@ -92,12 +104,58 @@ class ProductTemplateWithOptimizedImage(models.Model):
                 vals['photographer_id'] = default_photographer.id
 
         return super(ProductTemplateWithOptimizedImage, self).create(vals)
-        #return super(ProductTemplateWithOptimizedImage, self).create(vals)
+    
+    #se comentan estos por que no estan asignando el valor de fotgrafo por defecto 
+    # @api.model
+    # def create(self, vals):
+    #     if 'image_1920' in vals:
+    #         vals['optimized_image'] = self._process_image(vals['image_1920'], vals.get('watermark_image'))
+    #         vals['image_1920'] = vals['optimized_image']  # Reemplazar imagen original
+    #     # Si no se define photographer_id ni equitacion_id, se asigna el primero disponible
+    #     if not vals.get('photographer_id') and not vals.get('equitacion_id'):
+    #     #if 'photographer_id' not in vals and not self.equitacion_id:
+    #         default_photographer = self.env['res.partner'].search(
+    #             [('is_photographer', '=', True)],
+    #             order='id asc',
+    #             limit=1
+    #         )
+    #         if default_photographer:
+    #             vals['photographer_id'] = default_photographer.id
 
+    #     return super(ProductTemplateWithOptimizedImage, self).create(vals)
+        
+
+    # def write(self, vals):
+    #     if 'image_1920' in vals:
+    #         vals['optimized_image'] = self._process_image(vals['image_1920'], vals.get('watermark_image'))
+    #         vals['image_1920'] = vals['optimized_image']  # Reemplazar imagen original
+    #     if 'photographer_id' not in vals and not self.equitacion_id:
+    #         default_photographer = self.env['res.partner'].search(
+    #             [('is_photographer', '=', True)],
+    #             order='id asc',
+    #             limit=1
+    #         )
+    #         if default_photographer:
+    #             vals['photographer_id'] = default_photographer.id
+
+    #     #return super().write(vals)
+    #     return super(ProductTemplateWithOptimizedImage, self).write(vals)
+    
     def write(self, vals):
         if 'image_1920' in vals:
             vals['optimized_image'] = self._process_image(vals['image_1920'], vals.get('watermark_image'))
             vals['image_1920'] = vals['optimized_image']  # Reemplazar imagen original
+
+        # Si se actualiza equitacion_id, copiar datos relacionados
+        if 'equitacion_id' in vals:
+            equitacion = self.env['fotos.equitacion'].browse(vals['equitacion_id'])
+            vals.update({
+                'year': equitacion.year,
+                'jump_height': equitacion.jump_height,
+                'photographer_id': equitacion.photographer_id.id,
+            })
+
+        # Si no hay fotógrafo definido y tampoco equitación, asignar el primero disponible
         if 'photographer_id' not in vals and not self.equitacion_id:
             default_photographer = self.env['res.partner'].search(
                 [('is_photographer', '=', True)],
@@ -107,7 +165,6 @@ class ProductTemplateWithOptimizedImage(models.Model):
             if default_photographer:
                 vals['photographer_id'] = default_photographer.id
 
-        #return super().write(vals)
         return super(ProductTemplateWithOptimizedImage, self).write(vals)
     
     
@@ -145,15 +202,18 @@ class ProductProduct(models.Model):
     year = fields.Date(related='product_tmpl_id.year', store=True)
     jump_height = fields.Selection(related='product_tmpl_id.jump_height', store=True)
     equitacion_id = fields.Many2one(related='product_tmpl_id.equitacion_id', store=True)
-    #photographer_id = fields.Many2one(related='product_tmpl_id.photographer_id', store=True,domain="[('is_photographer', '=', True)]")
     
     photographer_id = fields.Many2one(
-        'res.partner',
-        string='Fotógrafo Responsable',
-        compute='_compute_photographer_id',
-        store=True,
-        domain="[('is_photographer', '=', True)]"
-    )
+    'res.partner',
+    related='product_tmpl_id.photographer_id',
+    store=True)
+    # photographer_id = fields.Many2one(
+    #     'res.partner',
+    #     string='Fotógrafo Responsable',
+    #     compute='_compute_photographer_id',
+    #     store=True,
+    #     domain="[('is_photographer', '=', True)]"
+    # )
 
     @api.depends('equitacion_id.photographer_id')
     def _compute_photographer_id(self):
