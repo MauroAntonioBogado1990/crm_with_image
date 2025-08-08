@@ -150,16 +150,64 @@ class WebsiteSaleExtended(http.Controller):
     
    #con este controller se puede ver solo los datos de usuario instagram y demás
    
+    #orinal
+    # @http.route('/update_user_profile', type='http', auth='user', methods=['POST'], csrf=True)
+    # def update_user_profile(self, **post):
+    #     user = request.env.user.sudo()
+    #     user.write({
+    #         #'instagram_account': post.get('instagram_account'),
+    #         'email': post.get('email'),
+    #         'phone': post.get('phone'),
+    #     })
+    #     return request.redirect(request.httprequest.referrer or '/')
+    
 
-    @http.route('/update_user_profile', type='http', auth='user', methods=['POST'], csrf=True)
+    
+    @http.route(['/update_user_profile'], type='http', auth='user', methods=['POST'], csrf=True)
     def update_user_profile(self, **post):
-        user = request.env.user.sudo()
+        user = request.env.user
         user.write({
-            #'instagram_account': post.get('instagram_account'),
-            'email': post.get('email'),
-            'phone': post.get('phone'),
+            'email': post.get('email') or user.email,
+            'phone': post.get('phone') or user.phone,
+            'instagram_account': post.get('instagram_account') or user.instagram_account,
         })
-        return request.redirect(request.httprequest.referrer or '/')
+        return request.make_response('', headers=[('X-Content-Type-Options', 'nosniff')])
+    
+    
+    
+    @http.route(['/my/account'], type='http', auth="user", methods=['POST'], website=True)
+    def account_save(self, **post):
+        partner = request.env.user.partner_id
+        user = request.env.user
+
+        # Guardar campos estándar del partner
+        values = {key: post[key] for key in [
+            'name', 'email', 'phone', 'street', 'city', 'zip',
+            'country_id', 'state_id', 'vat', 'company_name'
+        ] if key in post}
+
+        partner.sudo().write(values)
+
+        # Guardar campo personalizado en res.users y res.partner
+        if 'instagram_account' in post:
+            user.sudo().write({'instagram_account': post['instagram_account']})
+            partner.sudo().write({'instagram_account': post['instagram_account']})
+
+        return request.redirect('/my/account')
+    
+    # @http.route(['/my/account'], type='http', auth="user", website=True)
+    # def account(self, **kwargs):
+    #     partner = request.env.user.partner_id
+    #     user = request.env.user
+
+    #     values = {
+    #         'partner': partner,
+    #         'instagram_account': user.instagram_account,
+    #     }
+        
+    #     return request.render("portal.portal_my_details", values)
+
+
 
     
     

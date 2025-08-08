@@ -26,58 +26,108 @@
                     </ul>
                 </div> 
             
-                        <t t-set="current_user" t-value="request.env.user"/>
-                        <!--se crea esta variable  en el caso que no este disponible alguno de los campos-->
-                        <!-- <t t-set="needs_update" t-value="not current_user.email or not current_user.phone"/> -->
-                        <t t-set="needs_update" t-value="not current_user.email or not current_user.phone or not current_user.instagram_account"/> 
+                        <!-- <t t-set="current_user" t-value="request.env.user"/>
+                        
+                        <t t-set="needs_update" t-value="not current_user.email or not current_user.phone or not current_user.instagram_account"/>
 
-                        <div class="mt-3">
-                           
-                            <form action="/update_user_profile" method="post" class="o_website_form">
-                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="mt-3">
+                            
+                                <form action="/update_user_profile" method="post" class="o_website_form">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                    <div class="form-group">
+                                    
+                                    <t t-if="not current_user.email">
+                                    
+                                    <label>Por favor cargue su Email </label>
+                                        <span class="badge bg-warning text-dark">Cargar email</span>
+                                        <input type="email" name="email" class="form-control"
+                                        t-att-value="current_user.email or ''"/>
+                                    </t>
+                                    
+                                </div>
 
                                 <div class="form-group">
                                 
-                                <t t-if="not current_user.email">
+                                    <t t-if="not current_user.phone">
+                                    <label>Por favor cargue su WhatsApp</label>
+                                        <span class="badge bg-warning text-dark">Cargar teléfono</span>
+                                        <input type="text" name="phone" class="form-control"
+                                        t-att-value="current_user.phone or ''"/>
+                                    </t>
+                                    
+                                </div>
+
+                                <div class="form-group">
                                 
-                                <label>Por favor cargue su Email </label>
-                                    <span class="badge bg-warning text-dark">Cargar email</span>
-                                    <input type="email" name="email" class="form-control"
-                                    t-att-value="current_user.email or ''"/>
+                                    <t t-if="not current_user.instagram_account">
+                                    <label>Por favor cargue su cuenta de Instagram</label>
+                                        <span class="badge bg-warning text-dark">Cargar Instagram</span>
+                                    </t>
+                                    <input type="text" name="instagram_account" class="form-control"
+                                        t-att-value="current_user.instagram_account or ''"/>
+                                </div> 
+
+                                <t t-if="needs_update">
+                                    <button type="submit" class="btn btn-primary mt-2">Guardar</button>
                                 </t>
-                                
+
+                                </form>
+                            </div> -->
+                        <!--opcional de carga de instagram-->
+                        <!-- <div id="user_profile_prompt" class="mt-3">
+                        <form action="/update_user_profile" method="post" class="o_website_form">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                            <div class="form-group">
+                                <t t-if="not current_user.email">
+                                    <label>📧 Por favor cargue su Email</label>
+                                    <span class="badge bg-warning text-dark">Cargar email</span>
+                                    <input type="email" name="email" class="form-control" t-att-value="current_user.email or ''"/>
+                                </t>
                             </div>
 
                             <div class="form-group">
-                               
                                 <t t-if="not current_user.phone">
-                                 <label>Por favor cargue su WhatsApp</label>
+                                    <label>📱 Por favor cargue su WhatsApp</label>
                                     <span class="badge bg-warning text-dark">Cargar teléfono</span>
-                                    <input type="text" name="phone" class="form-control"
-                                    t-att-value="current_user.phone or ''"/>
+                                    <input type="text" name="phone" class="form-control" t-att-value="current_user.phone or ''"/>
                                 </t>
-                                
                             </div>
 
-                             <div class="form-group">
-                               
+                            <div class="form-group">
                                 <t t-if="not current_user.instagram_account">
-                                  <label>Por favor cargue su cuenta de Instagram</label>
+                                    <label>📷 Por favor cargue su cuenta de Instagram</label>
                                     <span class="badge bg-warning text-dark">Cargar Instagram</span>
+                                    <input type="text" name="instagram_account" class="form-control" t-att-value="current_user.instagram_account or ''"/>
                                 </t>
-                                <input type="text" name="instagram_account" class="form-control"
-                                    t-att-value="current_user.instagram_account or ''"/>
-                            </div> 
+                            </div>
 
-                             <t t-if="needs_update">
+                            <t t-if="needs_update">
                                 <button type="submit" class="btn btn-primary mt-2">Guardar</button>
                             </t>
+                        </form>
+                    </div>
 
-                            </form>
-                        </div>
+                    <div id="profile_update_message" class="mt-3"></div> -->
 
 
                     </xpath>
     </template>
+
+
+    <template id="add_instagram_to_my_account" inherit_id="portal.portal_my_details_fields">
+    <xpath expr="//div[label[@for='phone']]" position="after">
+        <div t-attf-class="mb-3 #{error.get('instagram_account') and 'o_has_error' or ''} col-xl-6">
+            <label class="col-form-label label-optional" for="instagram_account">Instagram</label>
+            <input type="text" name="instagram_account"
+                   t-attf-class="form-control #{error.get('instagram_account') and 'is-invalid' or ''}"
+                   t-att-value="instagram_account or partner.instagram_account"/>
+        </div>
+    </xpath>
+</template>
+
+
+
   </data>
 </odoo>

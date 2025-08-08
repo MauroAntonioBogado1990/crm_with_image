@@ -8,5 +8,6 @@ class ResPartner(models.Model):
     bank_account_info = fields.Text(string="Información de cuentas bancarias",store=True)
     bank_alias = fields.Char(string="Alias Bancario",store=True)
     bank_cbu_cvu = fields.Char(string="CBU/CVU",store=True)
+    
 
     
