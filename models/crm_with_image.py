@@ -82,6 +82,7 @@ class ProductTemplateWithOptimizedImage(models.Model):
             vals['image_1920'] = vals['optimized_image']  # Reemplazar imagen original
         # Si no se define photographer_id ni equitacion_id, se asigna el primero disponible
         if not vals.get('photographer_id') and not vals.get('equitacion_id'):
+        #if 'photographer_id' not in vals and not self.equitacion_id:
             default_photographer = self.env['res.partner'].search(
                 [('is_photographer', '=', True)],
                 order='id asc',
@@ -158,6 +159,21 @@ class ProductProduct(models.Model):
     def _compute_photographer_id(self):
         for template in self:
             template.photographer_id = template.equitacion_id.photographer_id
+    
+    @api.model
+    def create(self, vals):
+        # Si no se define photographer_id ni equitacion_id, se asigna el primero disponible
+        if not vals.get('photographer_id') and not vals.get('equitacion_id'):
+            default_photographer = self.env['res.partner'].search(
+                [('is_photographer', '=', True)],
+                order='id asc',
+                limit=1
+            )
+            if default_photographer:
+                vals['photographer_id'] = default_photographer.id
+
+        return super(ProductProduct, self).create(vals)
+
 
     
 

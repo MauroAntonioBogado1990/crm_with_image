@@ -10,8 +10,9 @@
 <!--template de agregado de datos de fotrago en la imagen del producto-->
         <template id="product_photographer_data" inherit_id="website_sale.product">
             <xpath expr="//div[@id='product_details']" position="inside">
-         
+                
                 <t t-set="photographer" t-value="product.sudo().photographer_id"/>
+                
                
                 <div class="mt-3" t-if="photographer">
                     <h5>Información del Fotógrafo</h5>
@@ -25,20 +26,57 @@
                     </ul>
                 </div> 
             
-            <!-- <t t-if="user and user.partner_id.id != user.env.ref('base.public_user').id"> -->
-<!-- 
-                 <div class="mt-3">
-                    <h5>Datos Clientes</h5>
-                    <h6>Para estar en contacto solicitamos estos datos</h6>
-                    <ul>
-                     <li><strong>Nombre:</strong> <t t-esc="user.name or 'No disponible'"/></li>
-                    <li><strong>Email:</strong> <t t-esc="user.email or 'No disponible'"/></li>
-                    <li><strong>WhatsApp:</strong> <t t-esc="user.phone or 'No disponible'"/></li>
-                    <li><strong>Instagram:</strong> <t t-esc="user.instagram_account or 'No disponible'"/></li>
-   
-                    </ul>
-                </div>  -->
-             <!-- </t> -->
+                        <t t-set="current_user" t-value="request.env.user"/>
+                        <!--se crea esta variable  en el caso que no este disponible alguno de los campos-->
+                        <!-- <t t-set="needs_update" t-value="not current_user.email or not current_user.phone"/> -->
+                        <t t-set="needs_update" t-value="not current_user.email or not current_user.phone or not current_user.instagram_account"/> 
+
+                        <div class="mt-3">
+                           
+                            <form action="/update_user_profile" method="post" class="o_website_form">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                <div class="form-group">
+                                
+                                <t t-if="not current_user.email">
+                                
+                                <label>Por favor cargue su Email </label>
+                                    <span class="badge bg-warning text-dark">Cargar email</span>
+                                    <input type="email" name="email" class="form-control"
+                                    t-att-value="current_user.email or ''"/>
+                                </t>
+                                
+                            </div>
+
+                            <div class="form-group">
+                               
+                                <t t-if="not current_user.phone">
+                                 <label>Por favor cargue su WhatsApp</label>
+                                    <span class="badge bg-warning text-dark">Cargar teléfono</span>
+                                    <input type="text" name="phone" class="form-control"
+                                    t-att-value="current_user.phone or ''"/>
+                                </t>
+                                
+                            </div>
+
+                             <div class="form-group">
+                               
+                                <t t-if="not current_user.instagram_account">
+                                  <label>Por favor cargue su cuenta de Instagram</label>
+                                    <span class="badge bg-warning text-dark">Cargar Instagram</span>
+                                </t>
+                                <input type="text" name="instagram_account" class="form-control"
+                                    t-att-value="current_user.instagram_account or ''"/>
+                            </div> 
+
+                             <t t-if="needs_update">
+                                <button type="submit" class="btn btn-primary mt-2">Guardar</button>
+                            </t>
+
+                            </form>
+                        </div>
+
+
                     </xpath>
     </template>
   </data>

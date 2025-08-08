@@ -148,63 +148,22 @@ class WebsiteSaleExtended(http.Controller):
 
         return request.redirect('/photographer/info')
     
-   #con este controller se puede ver solo los contactos que son de tipo fotografo
+   #con este controller se puede ver solo los datos de usuario instagram y demás
+   
+
+    @http.route('/update_user_profile', type='http', auth='user', methods=['POST'], csrf=True)
+    def update_user_profile(self, **post):
+        user = request.env.user.sudo()
+        user.write({
+            #'instagram_account': post.get('instagram_account'),
+            'email': post.get('email'),
+            'phone': post.get('phone'),
+        })
+        return request.redirect(request.httprequest.referrer or '/')
 
     
     
 
 
 
-
-    # @http.route(['/shop/contact_photographer'], type='json', auth="public", methods=['POST'], csrf=False)
-    # def create_lead_for_photographer(self, product_id, **kwargs):
-    #     _logger.info("Se ha llamado al endpoint /shop/contact_photographer")
-        
-    #     user = request.env.user
-    #     customer = request.env['res.partner'].search([('id', '=', user.partner_id.id)], limit=1)
-    #     product = request.env['product.product'].search([('id', '=', int(product_id))], limit=1)
-    #     #se agrega este campo para poder ver los productos
-    #     template = product.product_tmpl_id
-    #     admin = request.env['res.users'].browse(1)  
-
-    #     if not customer or not product:
-    #         _logger.warning("No se pudo registrar la oportunidad. Cliente o producto no encontrados.")
-    #         return {'error': _("No se pudo registrar la oportunidad. Verifica los datos.")}
-        
-        
-    #     base_url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
-    #     image_link = template.link_folder or "Sin enlace"
-    #     full_image_link = f"{base_url}{image_link}" if image_link.startswith('/') else image_link
-
-
-
-    #     # traer datos del partner 
-    #     admin_phone = admin.partner_id.phone or _("No disponible")
-
-    #     # Crear oportunidad en Cel crm
-    #     crm_lead = request.env['crm.lead'].sudo().create({
-    #         'name': f"Solicitud Fotografía - {customer.name}",
-    #         'partner_id': customer.id,
-    #         'contact_name': customer.name,
-    #         'phone': customer.phone,
-    #         'email_from': customer.email,
-    #         'description': (
-    #             f"Interés en fotografía del producto: {product.name}\n"
-    #             f"Año del Evento: {template.year or 'No indicado'}\n"
-    #             f"Altura: {template.jump_height or 'Sin especificar'}\n"
-    #             f"Enlace: {full_image_link}"
-    #             f"Link externo: {template.link or 'No especificado'}"
-    #         ),
-    #         'link_carpeta': template.link or '',
-    #         'user_id': admin.id,
-    #     })
-
-
-    #     _logger.info(f"Oportunidad creada con ID: {crm_lead.id}")
-
-    #     return {
-    #         'message': _("Gracias por tu interés. Hemos enviado la solicitud al fotógrafo."),
-    #         'admin_phone': admin_phone,
-    #         'crm_lead_id': crm_lead.id
-    #     }
     
